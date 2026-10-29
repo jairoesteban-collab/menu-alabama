@@ -188,7 +188,7 @@ function alb_ssr_apply($html, $w, $now = null) {
     $html = alb_ssr_put($html, 'rango', alb_ssr_e(alb_ssr_corto($w['rango'])));
     $html = alb_ssr_put($html, 'tabs', $rw['tabs']);
     $html = alb_ssr_put($html, 'pans', $rw['pans']);
-    $html = alb_ssr_put($html, 'mdata', '<script type="application/json" id="menu-semana-data">' . alb_ssr_json($w) . '</script>');
+    $html = alb_ssr_put($html, 'mdata', '<script type="application/json" id="menu-semana-data">' . alb_ssr_json($w) . '</script><!--alb-ssr ' . gmdate('Y-m-d H:i') . 'Z-->');
   }
   if (strpos($html, '<!--alb:hday-->') !== false) {
     $pk = alb_ssr_pick($w, $now);
@@ -197,7 +197,7 @@ function alb_ssr_apply($html, $w, $now = null) {
       $html = alb_ssr_put($html, 'hday', alb_ssr_render_day($w['dias'][$pk['i']], $c));
       $html = alb_ssr_put($html, 'hk', $c === 'hoy' ? 'Menú del día de hoy' : ($c === 'manana' ? 'Menú de mañana' : 'Próximo menú'));
     }
-    $html = alb_ssr_put($html, 'hdata', '<script type="application/json" id="hoy-alabama-data">' . alb_ssr_json($w) . '</script>');
+    $html = alb_ssr_put($html, 'hdata', '<script type="application/json" id="hoy-alabama-data">' . alb_ssr_json($w) . '</script><!--alb-ssr ' . gmdate('Y-m-d H:i') . 'Z-->');
   }
   return $html;
 }
