@@ -81,6 +81,19 @@
 .alb-menu .am-price span{display:block;font-size:.85rem;color:var(--t);margin-top:4px;line-height:1.35}
 .alb-menu .am-price.is-main{border-color:var(--c);background:#FDEBEA}
 .alb-menu .am-price-note{font-size:.84rem;color:var(--t);margin:0 0 24px}
+.alb-menu .am-salud{grid-column:1/-1;background:#EAF7F0;border-top:1.5px solid #CDEBDA;padding:22px 28px 24px}
+.alb-menu .am-salud.is-compact{grid-column:auto;border:1.5px solid #CDEBDA;border-radius:18px;margin-top:22px;padding:18px 20px}
+.alb-menu .am-salud-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.alb-menu .am-salud-k{background:#4CBA83;color:#fff;font-size:.74rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:999px}
+.alb-menu .am-salud-p{font-weight:800;color:var(--k);font-size:1.05rem}
+.alb-menu .am-salud-lead{font-size:.92rem;color:var(--t);margin:0 0 12px;line-height:1.45}
+.alb-menu .am-salud-l{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.alb-menu .am-salud.is-compact .am-salud-l{grid-template-columns:1fr}
+.alb-menu .am-salud-l li{background:#fff;border-radius:14px;padding:12px 14px;min-width:0}
+.alb-menu .am-salud-l b{display:block;font-size:1rem;color:var(--k);margin-bottom:3px}
+.alb-menu .am-salud-l span{display:block;font-size:.88rem;line-height:1.4;color:var(--t)}
+.alb-menu a.am-btn2{display:inline-flex;align-items:center;justify-content:center;margin-top:14px;background:#fff!important;color:#2f8f5f!important;border:1.5px solid #4CBA83;text-decoration:none!important;font-weight:800;font-size:.95rem;padding:11px 22px;border-radius:999px;min-height:44px}
+.alb-menu a.am-btn2:hover{background:#4CBA83!important;color:#fff!important}
 /* franja del home */
 .alb-hoy .ah-card{display:grid;grid-template-columns:1.35fr 1fr;border:1.5px solid var(--g2);border-radius:26px;overflow:hidden}
 .alb-hoy .ah-main{padding:32px 32px 34px;min-width:0}
@@ -107,7 +120,9 @@
 .alb-menu .am-price small{font-size:.6rem;letter-spacing:.04em}
 .alb-menu .am-price strong{font-size:1.08rem}
 .alb-menu .am-price span{display:none}
-.alb-menu .am-barra{margin-top:-14px}
+.alb-menu .am-salud-l{grid-template-columns:1fr}
+.alb-menu .am-salud{padding:20px}
+.alb-menu a.am-btn2{width:100%}
 .alb-hoy .ah-card{grid-template-columns:1fr;border-radius:22px}
 .alb-hoy .ah-main,.alb-hoy .ah-side{padding:22px 20px}
 .alb-hoy .ah-side .am-prices{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
@@ -121,7 +136,7 @@
 <div class="ah-main">
 <span class="am-k">Menú del día de hoy</span>
 <h2 id="ah-h" style="font-size:clamp(1.25rem,2.2vw,1.5rem);margin-bottom:14px">Hoy en Alabama</h2>
-<div class="ah-day"><div class="ah-dn"><span class="ah-when">Hoy · Jueves 29</span><span class="am-tag">Típico paisa</span></div><p class="am-prot">Frijoles con chicharrón o carne molida (se elige una)</p><p class="am-sides">Tajadas de maduro <i>·</i> Arroz jardinera</p><p class="am-ens"><b>Ensalada del día:</b> Campesina: zanahoria en julianas, cilantro y tomate pintón</p><p class="am-barra"><b>Ensaladas de la barra</b> <small>(línea saludable)</small> César <i>·</i> Frijol y aguacate</p><p class="am-ens ah-otras"><b>También hay:</b> Pollo en frutas tropicales</p><a class="am-btn" href="https://wa.me/573184024854?text=Hola%2C%20vengo%20de%20la%20p%C3%A1gina%20web%20y%20quiero%20pedir%20el%20almuerzo%20del%20jueves%2029%3A%20Frijoles%20con%20chicharr%C3%B3n%20o%20carne%20molida%20(se%20elige%20una)." target="_blank" rel="noopener" data-cta="home-hoy-jue">Pedir el almuerzo de hoy</a></div>
+<div class="ah-day"><div class="ah-dn"><span class="ah-when">Hoy · Jueves 29</span><span class="am-tag">Típico paisa</span></div><p class="am-prot">Frijoles con chicharrón o carne molida (se elige una)</p><p class="am-sides">Tajadas de maduro <i>·</i> Arroz jardinera</p><p class="am-ens"><b>Ensalada del día:</b> Campesina: zanahoria en julianas, cilantro y tomate pintón</p><p class="am-ens ah-otras"><b>También hay:</b> Pollo en frutas tropicales</p><a class="am-btn" href="https://wa.me/573184024854?text=Hola%2C%20vengo%20de%20la%20p%C3%A1gina%20web%20y%20quiero%20pedir%20el%20almuerzo%20del%20jueves%2029%3A%20Frijoles%20con%20chicharr%C3%B3n%20o%20carne%20molida%20(se%20elige%20una)." target="_blank" rel="noopener" data-cta="home-hoy-jue">Pedir el almuerzo de hoy</a><div class="am-salud is-compact"><div class="am-salud-h"><span class="am-salud-k">Línea saludable</span><span class="am-salud-p">$35.950</span></div><p class="am-salud-lead">¿Prefieres algo más ligero? Escoge una de las ensaladas de la barra y te la llevamos con proteína animal o vegana y acompañante.</p><ul class="am-salud-l"><li><b>Ensalada César</b><span>Espinaca y lechugas, tomate, huevo, crotones, parmesano y aguacate, con aderezo ranch.</span></li><li><b>Ensalada Frijol y aguacate</b><span>Lechuga, frijol, aguacate, maíz, tomate, cebolla morada y totopos, con vinagreta de limón y cilantro.</span></li></ul><a class="am-btn2" href="https://wa.me/573184024854?text=Hola%2C%20vengo%20de%20la%20p%C3%A1gina%20web%20y%20quiero%20el%20almuerzo%20saludable%20del%20jueves%2029.%20Ensaladas%20de%20la%20barra%3A%20C%C3%A9sar%20o%20Frijol%20y%20aguacate." target="_blank" rel="noopener" data-cta="home-salud-jue">Pedir el saludable</a></div></div>
 <div class="ah-off"><p class="am-prot" style="font-size:1.4rem">Estamos montando el menú de esta semana</p><p class="am-ens">Escríbenos y te contamos qué hay hoy.</p><a class="am-btn" href="https://wa.me/573184024854?text=Hola%2C%20vengo%20de%20la%20p%C3%A1gina%20web.%20%C2%BFQu%C3%A9%20men%C3%BA%20hay%20hoy%3F" target="_blank" rel="noopener" data-cta="home-hoy-consulta">Preguntar el menú de hoy</a></div>
 </div>
 <div class="ah-side">
@@ -196,9 +211,27 @@ window.ALB = window.ALB || (function () {
     return { i: -1, hoy: -1, manana: false };
   }
 
-  function barraHtml(d) {
-    if (!d.barra || !d.barra.length) return '';
-    return '<p class="am-barra"><b>Ensaladas de la barra</b> <small>(línea saludable)</small> ' + d.barra.map(e).join(' <i>·</i> ') + '</p>';
+  var BARRA = {
+    'cubana': 'Lechuga, brócoli, frijol negro, mango, queso y chips crocantes, con vinagreta de cilantro y coco.',
+    'césar': 'Espinaca y lechugas, tomate, huevo, crotones, parmesano y aguacate, con aderezo ranch.',
+    'toscana': 'Espinaca, berenjena salteada, champiñones, tocineta, mozzarella, maní y albahaca, con vinagreta de maracuyá.',
+    'frijol y aguacate': 'Lechuga, frijol, aguacate, maíz, tomate, cebolla morada y totopos, con vinagreta de limón y cilantro.',
+    'caribe verde': 'Lechuga, pepino, piña oromiel, aguacate y maní, con vinagreta de cilantro y coco.',
+    'mediterránea': 'Lechuga, pepino, piña, tomate cherry, aceitunas, queso campesino y almendras, con balsámico.'
+  };
+  function barraItems(d) {
+    return (d.barra || []).map(function (b) {
+      var n = typeof b === 'string' ? b : (b.n || ''), desc = BARRA[n.toLowerCase()] || (typeof b === 'object' ? b.d : '') || '';
+      return { n: n, d: desc };
+    }).filter(function (x) { return x.n; });
+  }
+  /* Bloque de la línea saludable: otra categoría, separada del casero */
+  function saludHtml(d, compact) {
+    var it = barraItems(d); if (!it.length) return '';
+    return '<div class="am-salud' + (compact ? ' is-compact' : '') + '"><div class="am-salud-h"><span class="am-salud-k">Línea saludable</span><span class="am-salud-p">$35.950</span></div>'
+      + '<p class="am-salud-lead">¿Prefieres algo más ligero? Escoge una de las ensaladas de la barra y te la llevamos con proteína animal o vegana y acompañante.</p>'
+      + '<ul class="am-salud-l">' + it.map(function (x) { return '<li><b>Ensalada ' + e(x.n) + '</b>' + (x.d ? '<span>' + e(x.d) + '</span>' : '') + '</li>'; }).join('') + '</ul>'
+      + '<a class="am-btn2" href="' + e(wa('Hola, vengo de la página web y quiero el almuerzo saludable del ' + d.dn.toLowerCase() + '. Ensaladas de la barra: ' + it.map(function (x) { return x.n; }).join(' o ') + '.')) + '" target="_blank" rel="noopener" data-cta="' + (compact ? 'home' : 'menu') + '-salud-' + key(d.dn) + '">Pedir el saludable</a></div>';
   }
 
   /* Pestañas y paneles de la semana (/menu/) */
@@ -210,9 +243,9 @@ window.ALB = window.ALB || (function () {
       var alt = d.alt.map(function (a) { return '<li>' + (a[0] ? '<span>' + e(a[0]) + '</span>' : '') + e(a[1]) + '</li>'; }).join('');
       pans += '<article class="am-panel" id="am-p-' + i + '" role="tabpanel" data-f="' + d.f + '"><div class="am-main"><div class="am-dn"><h3>' + e(d.dn) + '</h3>' + (d.tag ? '<span class="am-tag">' + e(d.tag) + '</span>' : '') + '</div>'
         + '<span class="am-lab">Menú del día</span><p class="am-prot">' + e(d.prot) + '</p><p class="am-sides">' + e(d.acomp) + ' <i>·</i> ' + e(d.arroz) + '</p>'
-        + '<p class="am-ens"><b>Ensalada del día:</b> ' + e(d.ens) + '</p>' + barraHtml(d)
+        + '<p class="am-ens"><b>Ensalada del día:</b> ' + e(d.ens) + '</p>'
         + '<a class="am-btn" href="' + e(wa('Hola, vengo de la página web y quiero pedir el almuerzo del ' + d.dn.toLowerCase() + ': ' + d.prot + '.')) + '" target="_blank" rel="noopener" data-cta="menu-dia-' + key(d.dn) + '">Pedir el almuerzo del ' + e(dia.toLowerCase()) + '</a></div>'
-        + '<div class="am-alt"><span class="am-lab2">Otras opciones para ese día</span><ul>' + alt + '</ul><p class="am-note">Cambia la proteína, el acompañante o la sopa por cualquiera de estas, sin costo.</p></div></article>';
+        + '<div class="am-alt"><span class="am-lab2">Otras opciones para este día</span><ul>' + alt + '</ul><p class="am-note">Cambia la proteína, el acompañante o la sopa por cualquiera de estas, sin costo.</p></div>' + saludHtml(d) + '</article>';
     });
     return { tabs: tabs, pans: pans };
   }
@@ -225,9 +258,9 @@ window.ALB = window.ALB || (function () {
     var otras = d.alt.filter(function (a) { return /prote/i.test(a[0]) || /sopa/i.test(a[0]); }).map(function (a) { return e(a[1]); });
     return '<div class="ah-dn"><span class="ah-when">' + e(etiqueta) + '</span>' + (d.tag ? '<span class="am-tag">' + e(d.tag) + '</span>' : '') + '</div>'
       + '<p class="am-prot">' + e(d.prot) + '</p><p class="am-sides">' + e(d.acomp) + ' <i>·</i> ' + e(d.arroz) + '</p>'
-      + '<p class="am-ens"><b>Ensalada del día:</b> ' + e(d.ens) + '</p>' + barraHtml(d)
+      + '<p class="am-ens"><b>Ensalada del día:</b> ' + e(d.ens) + '</p>'
       + (otras.length ? '<p class="am-ens ah-otras"><b>También hay:</b> ' + otras.join(' · ') + '</p>' : '')
-      + '<a class="am-btn" href="' + e(wa('Hola, vengo de la página web y quiero pedir el almuerzo del ' + d.dn.toLowerCase() + ': ' + d.prot + '.')) + '" target="_blank" rel="noopener" data-cta="home-hoy-' + key(d.dn) + '">' + e(boton) + '</a>';
+      + '<a class="am-btn" href="' + e(wa('Hola, vengo de la página web y quiero pedir el almuerzo del ' + d.dn.toLowerCase() + ': ' + d.prot + '.')) + '" target="_blank" rel="noopener" data-cta="home-hoy-' + key(d.dn) + '">' + e(boton) + '</a>' + saludHtml(d, true);
   }
 
   function corto(rango) { var r = rango.replace(/ de 20\d\d$/, ''); return r.charAt(0).toLowerCase() + r.slice(1); }
