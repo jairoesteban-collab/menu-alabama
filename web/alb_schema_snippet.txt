@@ -6,13 +6,13 @@
  * coherentes con el Perfil de Negocio de Google: nombre, teléfono, menú, zona, precios.
  * Si algo falla, devuelve el esquema original sin tocarlo.
  *
- * HORARIO: se deja vacío hasta que Gerencia confirme el horario oficial (en Google Business
- * figura 8:00 a. m.–4:00 p. m. L–V y 8:00 a. m.–3:00 p. m. sábado; la web y la IA dicen 8:00–3:30).
+ * HORARIO: lunes a sábado, 8:00 a. m.–3:30 p. m. (confirmado por Gerencia el 29-oct-2026; igual en
+ * Google Business, la web, la IA de WhatsApp y las respuestas rápidas).
  */
 add_filter('rank_math/json_ld', function ($data, $jsonld) {
   try {
     if (!is_array($data)) return $data;
-    $horario = array(); // ej.: array(array('dias'=>array('Monday','Tuesday','Wednesday','Thursday','Friday'),'abre'=>'08:00','cierra'=>'16:00'), array('dias'=>array('Saturday'),'abre'=>'08:00','cierra'=>'15:00'));
+    $horario = array(array('dias' => array('Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'), 'abre' => '08:00', 'cierra' => '15:30')); // horario oficial confirmado por Gerencia 29-oct-2026: L–S 8:00 a. m.–3:30 p. m.
     foreach ($data as $k => $ent) {
       if (!is_array($ent) || !isset($ent['@type'])) continue;
       $t = (array)$ent['@type'];
