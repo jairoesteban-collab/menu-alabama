@@ -1,0 +1,57 @@
+/**
+ * Alabama - Ficha de restaurante (schema.org) para Google y asistentes de IA
+ *
+ * Toma la entidad "Organization" que genera Rank Math (@id https://alabama.soy/#organization)
+ * y la convierte en Restaurant (subtipo de LocalBusiness y de Organization), con datos
+ * coherentes con el Perfil de Negocio de Google: nombre, teléfono, menú, zona, precios.
+ * Si algo falla, devuelve el esquema original sin tocarlo.
+ *
+ * HORARIO: se deja vacío hasta que Gerencia confirme el horario oficial (en Google Business
+ * figura 8:00 a. m.–4:00 p. m. L–V y 8:00 a. m.–3:00 p. m. sábado; la web y la IA dicen 8:00–3:30).
+ */
+add_filter('rank_math/json_ld', function ($data, $jsonld) {
+  try {
+    if (!is_array($data)) return $data;
+    $horario = array(); // ej.: array(array('dias'=>array('Monday','Tuesday','Wednesday','Thursday','Friday'),'abre'=>'08:00','cierra'=>'16:00'), array('dias'=>array('Saturday'),'abre'=>'08:00','cierra'=>'15:00'));
+    foreach ($data as $k => $ent) {
+      if (!is_array($ent) || !isset($ent['@type'])) continue;
+      $t = (array)$ent['@type'];
+      if (!in_array('Organization', $t, true) || (isset($ent['@id']) && strpos($ent['@id'], '#organization') === false)) continue;
+      $ent['@type'] = 'Restaurant';
+      $ent['name'] = 'Alabama';
+      $ent['alternateName'] = 'Alabama · Almuerzos caseros a domicilio';
+      $ent['description'] = 'Almuerzos caseros y saludables a domicilio en Medellín desde 2007. Cada día un menú diferente (casero, saludable y bowl), Plan Alabama de 20 almuerzos y almuerzos para empresas: comedor en sitio, entrega diaria por persona y convenios. Cocina propia en San Fernando Plaza, El Poblado.';
+      $ent['url'] = 'https://alabama.soy/';
+      $ent['telephone'] = '+57 318 402 4854';
+      $ent['hasMenu'] = 'https://alabama.soy/menu/';
+      $ent['servesCuisine'] = array('Colombiana', 'Comida casera', 'Saludable');
+      $ent['priceRange'] = '$32.950 - $35.950';
+      $ent['currenciesAccepted'] = 'COP';
+      $ent['acceptsReservations'] = false;
+      $ent['foundingDate'] = '2007';
+      $ent['areaServed'] = array(
+        array('@type' => 'Place', 'name' => 'El Poblado, Medellín'),
+        array('@type' => 'Place', 'name' => 'Milla de Oro, Medellín'),
+        array('@type' => 'Place', 'name' => 'Laureles, Medellín'),
+        array('@type' => 'City', 'name' => 'Envigado'),
+        array('@type' => 'City', 'name' => 'Sabaneta'),
+        array('@type' => 'City', 'name' => 'Medellín')
+      );
+      $ent['address'] = array('@type' => 'PostalAddress', 'streetAddress' => 'Carrera 43A #1-50, San Fernando Plaza, Local 323', 'addressLocality' => 'Medellín', 'addressRegion' => 'Antioquia', 'addressCountry' => 'CO');
+      $same = isset($ent['sameAs']) ? (array)$ent['sameAs'] : array();
+      foreach (array('https://www.facebook.com/alabama.soy', 'https://www.instagram.com/alabama.soy/') as $u) if (!in_array($u, $same, true)) $same[] = $u;
+      $ent['sameAs'] = array_values($same);
+      $ent['contactPoint'] = array(
+        array('@type' => 'ContactPoint', 'telephone' => '+57 318 402 4854', 'contactType' => 'customer service', 'areaServed' => 'CO', 'availableLanguage' => 'es', 'name' => 'Domicilios y Plan Alabama (WhatsApp)'),
+        array('@type' => 'ContactPoint', 'telephone' => '+57 318 206 2606', 'contactType' => 'sales', 'areaServed' => 'CO', 'availableLanguage' => 'es', 'name' => 'Empresas y catering (WhatsApp)')
+      );
+      if ($horario) {
+        $oh = array();
+        foreach ($horario as $h) $oh[] = array('@type' => 'OpeningHoursSpecification', 'dayOfWeek' => $h['dias'], 'opens' => $h['abre'], 'closes' => $h['cierra']);
+        $ent['openingHoursSpecification'] = $oh;
+      }
+      $data[$k] = $ent;
+    }
+  } catch (\Throwable $e) {}
+  return $data;
+}, 99, 2);
