@@ -1,4 +1,3 @@
-<?php
 /**
  * Alabama - Menú de la semana como datos estructurados (schema.org Menu) en /menu/
  *
