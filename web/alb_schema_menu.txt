@@ -1,0 +1,93 @@
+<?php
+/**
+ * Alabama - Menú de la semana como datos estructurados (schema.org Menu) en /menu/
+ *
+ * Toma la misma semana que ya lee el fragmento 9850 (menú servido desde el servidor)
+ * y la agrega al JSON-LD de Rank Math como una entidad Menu: precios de las tres líneas
+ * y, por cada día, el almuerzo casero y el saludable con sus ensaladas de la barra.
+ * Así Google, Copilot, ChatGPT y Perplexity leen el plato del día y su precio sin inventar.
+ * Si falta el fragmento 9850 o no hay semana, no agrega nada y la página sigue igual.
+ *
+ * PRECIOS (Fuente de Verdad, jul-2026): Casero $32.950 · Saludable $35.950 · Bowl $35.950 ·
+ * Bebida natural $2.500. Si cambian, cambiar aquí, en el bloque de /menu/ y en Google Business.
+ */
+if (!defined('ABSPATH') && !defined('ALB_SSR_TEST')) { return; }
+
+if (!function_exists('alb_menu_schema')) {
+  function alb_menu_schema($w) {
+    if (!is_array($w) || empty($w['dias'])) return null;
+    $P = array('casero' => '32950', 'saludable' => '35950', 'bowl' => '35950', 'bebida' => '2500');
+    $dias = array('lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo');
+    $meses = array(1 => 'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
+    $offer = function ($p) { return array('@type' => 'Offer', 'price' => $p, 'priceCurrency' => 'COP', 'availability' => 'https://schema.org/InStock'); };
+    $base = 'https://alabama.soy/menu/';
+
+    $fijo = array(
+      array('@type' => 'MenuItem', 'name' => 'Almuerzo Casero a domicilio',
+        'description' => 'Sopa, proteína de 130 g, arroz, acompañante y ensalada del día. Un menú diferente cada día; puedes cambiar la proteína, la sopa o el acompañante por las opciones del día.',
+        'offers' => $offer($P['casero'])),
+      array('@type' => 'MenuItem', 'name' => 'Almuerzo Saludable a domicilio',
+        'description' => 'Una ensalada de la barra del día, con proteína animal o vegana y acompañante.',
+        'offers' => $offer($P['saludable'])),
+      array('@type' => 'MenuItem', 'name' => 'Bowl a domicilio',
+        'description' => 'Arroz, proteína, acompañante y vegetales frescos en un solo recipiente, con las opciones del día.',
+        'offers' => $offer($P['bowl'])),
+      array('@type' => 'MenuItem', 'name' => 'Bebida natural del día',
+        'description' => 'Jugo natural del día, con o sin azúcar. Opcional.',
+        'offers' => $offer($P['bebida'])),
+    );
+    $secciones = array(array('@type' => 'MenuSection', 'name' => 'Almuerzos a domicilio (precios)',
+      'description' => 'Vegetariano al mismo precio. Domicilio gratis en El Poblado y Milla de Oro; otras zonas desde $5.000.',
+      'hasMenuItem' => $fijo));
+
+    foreach ($w['dias'] as $d) {
+      if (empty($d['f']) || empty($d['prot'])) continue;
+      $t = DateTime::createFromFormat('Y-m-d', $d['f'], new DateTimeZone('America/Bogota'));
+      if (!$t) continue;
+      $fecha = $dias[(int)$t->format('N') - 1] . ' ' . (int)$t->format('j') . ' de ' . $meses[(int)$t->format('n')];
+      $sopa = ''; $otra = '';
+      foreach ((array)$d['alt'] as $a) {
+        if (!is_array($a) || count($a) < 2) continue;
+        if ($sopa === '' && preg_match('/sopa/iu', $a[0])) $sopa = $a[1];
+        if ($otra === '' && preg_match('/prote/iu', $a[0])) $otra = $a[1];
+      }
+      $desc = array();
+      if ($sopa !== '') $desc[] = $sopa . '.';
+      $lc = function ($s) { return mb_strtolower(mb_substr($s, 0, 1, 'UTF-8'), 'UTF-8') . mb_substr($s, 1, null, 'UTF-8'); };
+      $desc[] = $d['prot'] . ($d['acomp'] !== '' ? ' con ' . $lc($d['acomp']) : '') . ($d['arroz'] !== '' ? ' y ' . $lc($d['arroz']) : '') . '.';
+      if ($d['ens'] !== '') $desc[] = 'Ensalada del día: ' . $d['ens'] . '.';
+      if ($otra !== '') $desc[] = 'Otra proteína: ' . $otra . '.';
+      $items = array(array('@type' => 'MenuItem', 'name' => 'Almuerzo casero: ' . $d['prot'],
+        'description' => implode(' ', $desc), 'offers' => $offer($P['casero'])));
+      $barra = function_exists('alb_ssr_barra_items') ? alb_ssr_barra_items($d) : array();
+      if ($barra) {
+        $nb = array(); foreach ($barra as $b) $nb[] = $b['n'] . ($b['d'] !== '' ? ' (' . rtrim($b['d'], '.') . ')' : '');
+        $items[] = array('@type' => 'MenuItem', 'name' => 'Almuerzo saludable: ensalada de la barra',
+          'description' => 'Escoge una: ' . implode('; ', $nb) . '. Con proteína animal o vegana y acompañante.',
+          'offers' => $offer($P['saludable']));
+      }
+      $sec = array('@type' => 'MenuSection', 'name' => 'Menú del ' . $fecha . ($d['tag'] !== '' ? ' (' . $d['tag'] . ')' : ''),
+        'hasMenuItem' => $items);
+      $secciones[] = $sec;
+    }
+    if (count($secciones) < 2) return null;
+    return array(
+      '@type' => 'Menu', '@id' => $base . '#menu', 'url' => $base, 'inLanguage' => 'es-CO',
+      'name' => 'Menú de almuerzos caseros a domicilio de Alabama',
+      'description' => 'Menú de la semana: ' . $w['rango'] . '. Cambia cada día, de lunes a sábado. Pide y paga antes de las 11:00 a. m. y llega antes de la 1:00 p. m.',
+      'mainEntityOfPage' => $base,
+      'hasMenuSection' => $secciones,
+    );
+  }
+}
+
+if (defined('ABSPATH')) {
+  add_filter('rank_math/json_ld', function ($data, $jsonld) {
+    try {
+      if (!is_array($data) || !is_page(9153) || !function_exists('alb_ssr_week')) return $data;
+      $m = alb_menu_schema(alb_ssr_week());
+      if ($m) $data['albMenu'] = $m;
+    } catch (\Throwable $e) {}
+    return $data;
+  }, 100, 2);
+}
