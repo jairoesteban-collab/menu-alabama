@@ -1,0 +1,261 @@
+/**
+ * Alabama - Menú de la semana servido desde el servidor (SSR)
+ *
+ * Lee https://menu.alabama.soy/ desde el servidor y reemplaza, en el HTML de
+ * alabama.soy/ (franja "Hoy en Alabama") y alabama.soy/menu/ (bloque "Menú de la semana"),
+ * las zonas marcadas con <!--alb:xxx--> ... <!--/alb:xxx--> por la semana vigente.
+ * Así Google y los rastreadores de IA que no ejecutan JavaScript leen siempre el menú actual.
+ *
+ * Seguridad: si algo falla (sin red, estructura distinta, error de PHP), la página sale
+ * exactamente igual que antes (el texto fijo del widget). Todo va dentro de try/catch.
+ * Caché: la semana leída se guarda 30 min (transient). Una tarea de WP-Cron cada hora
+ * vuelve a leer y, si cambió la semana, el día o pasó la hora de corte (3 p. m.),
+ * vacía la caché de WP Rocket para que la página se regenere.
+ */
+if (!defined('ABSPATH') && !defined('ALB_SSR_TEST')) { return; }
+
+if (!function_exists('alb_ssr_e')) {
+
+function alb_ssr_e($s) { return htmlspecialchars((string)$s, ENT_COMPAT | ENT_SUBSTITUTE, 'UTF-8', true); }
+function alb_ssr_enc($s) { return strtr(rawurlencode($s), array('%21' => '!', '%2A' => '*', '%27' => "'", '%28' => '(', '%29' => ')')); }
+function alb_ssr_wa($msg) { return 'https://wa.me/573184024854?text=' . alb_ssr_enc($msg); }
+function alb_ssr_lower($s) { return mb_strtolower($s, 'UTF-8'); }
+function alb_ssr_dia($dn) { $p = explode(' ', $dn); return $p[0]; }
+function alb_ssr_key($dn) {
+  $k = alb_ssr_lower(mb_substr(alb_ssr_dia($dn), 0, 3, 'UTF-8'));
+  return strtr($k, array('á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'ü' => 'u', 'ñ' => 'n'));
+}
+function alb_ssr_ws($s) { return trim(preg_replace('/\s+/u', ' ', $s)); }
+function alb_ssr_has_class($node, $cls) {
+  if (!($node instanceof DOMElement)) return false;
+  return in_array($cls, preg_split('/\s+/', $node->getAttribute('class')), true);
+}
+
+/* Lee el HTML de menu.alabama.soy y devuelve la semana normalizada, o null (mismo contrato que ALB.parse) */
+function alb_ssr_parse($html) {
+  if (!is_string($html) || strlen($html) < 200) return null;
+  $prev = libxml_use_internal_errors(true);
+  $doc = new DOMDocument();
+  $ok = $doc->loadHTML('<?xml encoding="UTF-8">' . $html);
+  libxml_clear_errors(); libxml_use_internal_errors($prev);
+  if (!$ok) return null;
+  $xp = new DOMXPath($doc);
+  $cls = function ($c) { return "contains(concat(' ',normalize-space(@class),' '),' $c ')"; };
+  $r = $xp->query("//header//*[" . $cls('s') . "]");
+  if (!$r->length) return null;
+  $rango = trim($r->item(0)->textContent);
+  if (!preg_match('/(\d{1,2})\s+a\s+\S+\s+(\d{1,2})\s+de\s+(\w+)\s+de\s+(\d{4})/iu', $rango, $m)) return null;
+  $meses = array('enero'=>1,'febrero'=>2,'marzo'=>3,'abril'=>4,'mayo'=>5,'junio'=>6,'julio'=>7,'agosto'=>8,'septiembre'=>9,'octubre'=>10,'noviembre'=>11,'diciembre'=>12);
+  $mn = alb_ssr_lower($m[3]); if (!isset($meses[$mn])) return null;
+  $mes = $meses[$mn]; $an = (int)$m[4]; $d1 = (int)$m[1]; $d2 = (int)$m[2];
+  $mes1 = $d1 > $d2 ? ($mes === 1 ? 12 : $mes - 1) : $mes;
+  $an1 = ($d1 > $d2 && $mes === 1) ? $an - 1 : $an;
+  $extra = array();
+  $x = $doc->getElementById('alabama-extra');
+  if ($x) { $j = json_decode($x->textContent, true); if (is_array($j)) $extra = $j; }
+  $barra = (isset($extra['barra']) && is_array($extra['barra'])) ? $extra['barra'] : array();
+  $days = $xp->query("//*[" . $cls('day') . "]");
+  if ($days->length < 4) return null;
+  $w = array('rango' => $rango, 'dias' => array());
+  $tz = new DateTimeZone('UTC');
+  foreach ($days as $el) {
+    $dnN = $xp->query(".//*[" . $cls('dn') . "]", $el);
+    $dn = $dnN->length ? $dnN->item(0)->textContent : '';
+    $tag = preg_match('/T[IÍ]PICO/iu', $dn) ? 'Típico paisa' : '';
+    $dn = alb_ssr_ws(preg_replace('/T[IÍ]PICO PAISA/iu', '', $dn));
+    $parts = explode(' ', $dn); $num = isset($parts[1]) ? (int)$parts[1] : 0;
+    $base = new DateTime(sprintf('%04d-%02d-%02d', $an1, $mes1, $d1), $tz); $dt = clone $base;
+    for ($k = 0; $k < 7; $k++) { $t = clone $base; $t->modify("+$k day"); if ((int)$t->format('j') === $num) { $dt = $t; break; } }
+    $f = $dt->format('Y-m-d');
+    $menuN = $xp->query(".//*[" . $cls('menu') . "]", $el); $menu = $menuN->length ? $menuN->item(0) : null;
+    $bs = array(); $ens = '';
+    if ($menu) {
+      foreach ($menu->getElementsByTagName('b') as $b) $bs[] = trim($b->textContent);
+      $txt = $menu->textContent; $sp = explode('Ensalada del día:', $txt, 2);
+      $ens = isset($sp[1]) ? alb_ssr_ws($sp[1]) : '';
+    }
+    $alt = array();
+    $altN = $xp->query(".//*[" . $cls('alt') . "]", $el);
+    if ($altN->length) {
+      $chunks = array('');
+      foreach ($altN->item(0)->childNodes as $c) {
+        if ($c instanceof DOMElement && strtolower($c->tagName) === 'br') { $chunks[] = ''; continue; }
+        if (alb_ssr_has_class($c, 'lab2')) continue;
+        $chunks[count($chunks) - 1] .= $c->textContent;
+      }
+      foreach ($chunks as $ch) {
+        $t = alb_ssr_ws($ch); if ($t === '') continue;
+        $i = mb_strpos($t, ':', 0, 'UTF-8');
+        $alt[] = ($i !== false && $i > 0) ? array(trim(mb_substr($t, 0, $i, 'UTF-8')), trim(mb_substr($t, $i + 1, null, 'UTF-8'))) : array('', $t);
+      }
+    }
+    $w['dias'][] = array('f' => $f, 'dn' => $dn, 'tag' => $tag,
+      'prot' => isset($bs[0]) ? $bs[0] : '', 'acomp' => isset($bs[1]) ? $bs[1] : '', 'arroz' => isset($bs[2]) ? $bs[2] : '',
+      'ens' => $ens, 'alt' => $alt, 'barra' => (isset($barra[$f]) && is_array($barra[$f])) ? $barra[$f] : array());
+  }
+  $w['inicio'] = $w['dias'][0]['f']; $w['fin'] = $w['dias'][count($w['dias']) - 1]['f'];
+  return $w;
+}
+
+/* Día a mostrar en el home (mismo criterio que ALB.pick) */
+function alb_ssr_pick($w, $now = null) {
+  $now = $now ?: new DateTime('now', new DateTimeZone('America/Bogota'));
+  $hoy = $now->format('Y-m-d'); $h = (int)$now->format('G'); $n = count($w['dias']);
+  for ($i = 0; $i < $n; $i++) if ($w['dias'][$i]['f'] === $hoy) {
+    $man = $h >= 15 && $i < $n - 1;
+    return array('i' => $man ? $i + 1 : $i, 'hoy' => $i, 'manana' => $man);
+  }
+  for ($i = 0; $i < $n; $i++) if ($w['dias'][$i]['f'] > $hoy) return array('i' => $i, 'hoy' => -1, 'manana' => false);
+  return array('i' => -1, 'hoy' => -1, 'manana' => false);
+}
+
+function alb_ssr_barra_items($d) {
+  static $BARRA = array(
+    'cubana' => 'Lechuga, brócoli, frijol negro, mango, queso y chips crocantes, con vinagreta de cilantro y coco.',
+    'césar' => 'Espinaca y lechugas, tomate, huevo, crotones, parmesano y aguacate, con aderezo ranch.',
+    'toscana' => 'Espinaca, berenjena salteada, champiñones, tocineta, mozzarella, maní y albahaca, con vinagreta de maracuyá.',
+    'frijol y aguacate' => 'Lechuga, frijol, aguacate, maíz, tomate, cebolla morada y totopos, con vinagreta de limón y cilantro.',
+    'caribe verde' => 'Lechuga, pepino, piña oromiel, aguacate y maní, con vinagreta de cilantro y coco.',
+    'mediterránea' => 'Lechuga, pepino, piña, tomate cherry, aceitunas, queso campesino y almendras, con balsámico.'
+  );
+  $out = array();
+  foreach ((array)$d['barra'] as $b) {
+    $n = is_array($b) ? (isset($b['n']) ? $b['n'] : '') : (string)$b;
+    if ($n === '') continue;
+    $k = alb_ssr_lower($n);
+    $desc = isset($BARRA[$k]) ? $BARRA[$k] : ((is_array($b) && isset($b['d'])) ? $b['d'] : '');
+    $out[] = array('n' => $n, 'd' => $desc);
+  }
+  return $out;
+}
+
+function alb_ssr_salud($d, $compact) {
+  $it = alb_ssr_barra_items($d); if (!$it) return '';
+  $names = array(); foreach ($it as $x) $names[] = $x['n'];
+  $li = ''; foreach ($it as $x) $li .= '<li><b>Ensalada ' . alb_ssr_e($x['n']) . '</b>' . ($x['d'] !== '' ? '<span>' . alb_ssr_e($x['d']) . '</span>' : '') . '</li>';
+  return '<div class="am-salud' . ($compact ? ' is-compact' : '') . '"><div class="am-salud-h"><span class="am-salud-k">Línea saludable</span><span class="am-salud-p">$35.950</span></div>'
+    . '<p class="am-salud-lead">¿Prefieres algo más ligero? Escoge una de las ensaladas de la barra y te la llevamos con proteína animal o vegana y acompañante.</p>'
+    . '<ul class="am-salud-l">' . $li . '</ul>'
+    . '<a class="am-btn2" href="' . alb_ssr_e(alb_ssr_wa('Hola, vengo de la página web y quiero el almuerzo saludable del ' . alb_ssr_lower($d['dn']) . '. Ensaladas de la barra: ' . implode(' o ', $names) . '.')) . '" target="_blank" rel="noopener" data-cta="' . ($compact ? 'home' : 'menu') . '-salud-' . alb_ssr_key($d['dn']) . '">Pedir el saludable</a></div>';
+}
+
+/* Pestañas y paneles de la semana (/menu/) — igual a ALB.renderWeek */
+function alb_ssr_render_week($w) {
+  $tabs = ''; $pans = '';
+  foreach ($w['dias'] as $i => $d) {
+    $dia = alb_ssr_dia($d['dn']); $p = explode(' ', $d['dn']); $num = isset($p[1]) ? $p[1] : '';
+    $tabs .= '<button type="button" class="am-tab" role="tab" data-f="' . $d['f'] . '" aria-controls="am-p-' . $i . '" aria-selected="false"><span class="am-tab-d">' . alb_ssr_e(mb_substr($dia, 0, 3, 'UTF-8')) . '</span><span class="am-tab-n">' . alb_ssr_e($num) . '</span><span class="am-hoy">Hoy</span></button>';
+    $alt = ''; foreach ($d['alt'] as $a) $alt .= '<li>' . ($a[0] !== '' ? '<span>' . alb_ssr_e($a[0]) . '</span>' : '') . alb_ssr_e($a[1]) . '</li>';
+    $pans .= '<article class="am-panel" id="am-p-' . $i . '" role="tabpanel" data-f="' . $d['f'] . '"><div class="am-main"><div class="am-dn"><h3>' . alb_ssr_e($d['dn']) . '</h3>' . ($d['tag'] !== '' ? '<span class="am-tag">' . alb_ssr_e($d['tag']) . '</span>' : '') . '</div>'
+      . '<span class="am-lab">Menú del día</span><p class="am-prot">' . alb_ssr_e($d['prot']) . '</p><p class="am-sides">' . alb_ssr_e($d['acomp']) . ' <i>·</i> ' . alb_ssr_e($d['arroz']) . '</p>'
+      . '<p class="am-ens"><b>Ensalada del día:</b> ' . alb_ssr_e($d['ens']) . '</p>'
+      . '<a class="am-btn" href="' . alb_ssr_e(alb_ssr_wa('Hola, vengo de la página web y quiero pedir el almuerzo del ' . alb_ssr_lower($d['dn']) . ': ' . $d['prot'] . '.')) . '" target="_blank" rel="noopener" data-cta="menu-dia-' . alb_ssr_key($d['dn']) . '">Pedir el almuerzo del ' . alb_ssr_e(alb_ssr_lower($dia)) . '</a></div>'
+      . '<div class="am-alt"><span class="am-lab2">Otras opciones para este día</span><ul>' . $alt . '</ul><p class="am-note">Cambia la proteína, el acompañante o la sopa por cualquiera de estas, sin costo.</p></div>' . alb_ssr_salud($d, false) . '</article>';
+  }
+  return array('tabs' => $tabs, 'pans' => $pans);
+}
+
+/* Tarjeta de un día (home) — igual a ALB.renderDay */
+function alb_ssr_render_day($d, $cuando) {
+  $dia = alb_ssr_dia($d['dn']);
+  $et = $cuando === 'hoy' ? 'Hoy · ' . $d['dn'] : ($cuando === 'manana' ? 'Mañana · ' . $d['dn'] : $d['dn']);
+  $bt = $cuando === 'hoy' ? 'Pedir el almuerzo de hoy' : ($cuando === 'manana' ? 'Pedir el almuerzo de mañana' : 'Pedir el almuerzo del ' . alb_ssr_lower($dia));
+  $otras = array(); foreach ($d['alt'] as $a) if (preg_match('/prote/iu', $a[0]) || preg_match('/sopa/iu', $a[0])) $otras[] = alb_ssr_e($a[1]);
+  return '<div class="ah-dn"><span class="ah-when">' . alb_ssr_e($et) . '</span>' . ($d['tag'] !== '' ? '<span class="am-tag">' . alb_ssr_e($d['tag']) . '</span>' : '') . '</div>'
+    . '<p class="am-prot">' . alb_ssr_e($d['prot']) . '</p><p class="am-sides">' . alb_ssr_e($d['acomp']) . ' <i>·</i> ' . alb_ssr_e($d['arroz']) . '</p>'
+    . '<p class="am-ens"><b>Ensalada del día:</b> ' . alb_ssr_e($d['ens']) . '</p>'
+    . ($otras ? '<p class="am-ens ah-otras"><b>También hay:</b> ' . implode(' · ', $otras) . '</p>' : '')
+    . '<a class="am-btn" href="' . alb_ssr_e(alb_ssr_wa('Hola, vengo de la página web y quiero pedir el almuerzo del ' . alb_ssr_lower($d['dn']) . ': ' . $d['prot'] . '.')) . '" target="_blank" rel="noopener" data-cta="home-hoy-' . alb_ssr_key($d['dn']) . '">' . alb_ssr_e($bt) . '</a>' . alb_ssr_salud($d, true);
+}
+
+function alb_ssr_corto($rango) { $r = preg_replace('/ de 20\d\d$/', '', $rango); return alb_ssr_lower(mb_substr($r, 0, 1, 'UTF-8')) . mb_substr($r, 1, null, 'UTF-8'); }
+function alb_ssr_json($w) { return json_encode($w, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG); }
+
+/* Reemplaza el contenido entre <!--alb:k--> y <!--/alb:k--> */
+function alb_ssr_put($html, $k, $val) {
+  $a = '<!--alb:' . $k . '-->'; $b = '<!--/alb:' . $k . '-->';
+  $i = strpos($html, $a); if ($i === false) return $html;
+  $j = strpos($html, $b, $i); if ($j === false) return $html;
+  return substr($html, 0, $i + strlen($a)) . $val . substr($html, $j);
+}
+
+/* Aplica la semana a la página completa. Devuelve el HTML sin cambios si no hay marcadores */
+function alb_ssr_apply($html, $w, $now = null) {
+  if (!$w || empty($w['dias'])) return $html;
+  if (strpos($html, '<!--alb:') === false) return $html;
+  if (strpos($html, '<!--alb:tabs-->') !== false) {
+    $rw = alb_ssr_render_week($w);
+    $html = alb_ssr_put($html, 'rango', alb_ssr_e(alb_ssr_corto($w['rango'])));
+    $html = alb_ssr_put($html, 'tabs', $rw['tabs']);
+    $html = alb_ssr_put($html, 'pans', $rw['pans']);
+    $html = alb_ssr_put($html, 'mdata', '<script type="application/json" id="menu-semana-data">' . alb_ssr_json($w) . '</script>');
+  }
+  if (strpos($html, '<!--alb:hday-->') !== false) {
+    $pk = alb_ssr_pick($w, $now);
+    if ($pk['i'] >= 0) {
+      $c = ($pk['hoy'] >= 0 && $pk['i'] === $pk['hoy']) ? 'hoy' : ($pk['manana'] ? 'manana' : 'otro');
+      $html = alb_ssr_put($html, 'hday', alb_ssr_render_day($w['dias'][$pk['i']], $c));
+      $html = alb_ssr_put($html, 'hk', $c === 'hoy' ? 'Menú del día de hoy' : ($c === 'manana' ? 'Menú de mañana' : 'Próximo menú'));
+    }
+    $html = alb_ssr_put($html, 'hdata', '<script type="application/json" id="hoy-alabama-data">' . alb_ssr_json($w) . '</script>');
+  }
+  return $html;
+}
+
+} // function_exists
+
+/* ---------------- Integración con WordPress ---------------- */
+if (defined('ABSPATH') && !function_exists('alb_ssr_week')) {
+
+  function alb_ssr_week($force = false) {
+    $c = $force ? false : get_transient('alb_menu_week');
+    if (is_array($c)) return $c;
+    if ($c === 'fail') return get_option('alb_menu_week_last') ?: null;
+    $r = wp_remote_get('https://menu.alabama.soy/', array('timeout' => 4, 'redirection' => 2, 'user-agent' => 'alabama.soy-ssr'));
+    $w = null;
+    if (!is_wp_error($r) && (int)wp_remote_retrieve_response_code($r) === 200) $w = alb_ssr_parse(wp_remote_retrieve_body($r));
+    if ($w) { set_transient('alb_menu_week', $w, 30 * MINUTE_IN_SECONDS); update_option('alb_menu_week_last', $w, false); return $w; }
+    set_transient('alb_menu_week', 'fail', 5 * MINUTE_IN_SECONDS);
+    return get_option('alb_menu_week_last') ?: null;
+  }
+
+  add_action('template_redirect', function () {
+    try {
+      if (is_admin() || wp_doing_ajax() || is_feed()) return;
+      if (!(is_front_page() || is_page(9153))) return;
+      if (isset($_GET['elementor-preview'])) return;
+      ob_start(function ($html) {
+        try {
+          if (!is_string($html) || strpos($html, '<!--alb:') === false) return $html;
+          $w = alb_ssr_week();
+          return $w ? alb_ssr_apply($html, $w) : $html;
+        } catch (\Throwable $e) { return $html; }
+      });
+    } catch (\Throwable $e) {}
+  }, 1);
+
+  /* WP Rocket: aplica también al HTML que guarda en caché (por si su búfer corre antes que el nuestro) */
+  add_filter('rocket_buffer', function ($html) {
+    try {
+      if (!is_string($html) || strpos($html, '<!--alb:') === false) return $html;
+      $w = alb_ssr_week();
+      return $w ? alb_ssr_apply($html, $w) : $html;
+    } catch (\Throwable $e) { return $html; }
+  }, 5);
+
+  /* Cada hora: refresca la semana y vacía la caché de WP Rocket si cambió algo visible */
+  add_action('alb_menu_ssr_refresh', function () {
+    try {
+      $w = alb_ssr_week(true); if (!$w) return;
+      $pk = alb_ssr_pick($w);
+      $estado = md5($w['rango'] . '|' . $pk['i'] . '|' . ($pk['manana'] ? 1 : 0) . '|' . alb_ssr_json($w));
+      if (get_option('alb_menu_ssr_estado') === $estado) return;
+      update_option('alb_menu_ssr_estado', $estado, false);
+      if (function_exists('rocket_clean_home')) rocket_clean_home();
+      if (function_exists('rocket_clean_post')) rocket_clean_post(9153);
+    } catch (\Throwable $e) {}
+  });
+  add_action('init', function () {
+    if (!wp_next_scheduled('alb_menu_ssr_refresh')) wp_schedule_event(time() + 300, 'hourly', 'alb_menu_ssr_refresh');
+  });
+}
