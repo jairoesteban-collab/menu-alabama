@@ -1,0 +1,254 @@
+<style>.alb-menu{--c:#F16665;--k:#141414;--g:#F2F4F4;--g2:#E2E7E8;--t:#3d4447;background:#fff;color:var(--k);padding:56px 0 64px;font-family:inherit}
+.alb-menu *{box-sizing:border-box}
+.alb-menu .am-in{max-width:1140px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.alb-menu .am-k{display:block;color:var(--c);font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:.78rem;margin-bottom:10px}
+.alb-menu h2{font-size:clamp(1.7rem,3.6vw,2.6rem);line-height:1.1;margin:0 0 12px;color:var(--k);font-weight:800;text-wrap:balance}
+.alb-menu .am-lead{font-size:1.05rem;line-height:1.55;color:var(--t);max-width:62ch;margin:0 0 20px}
+.alb-menu .am-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 26px;padding:0;list-style:none}
+.alb-menu .am-chips li{background:var(--g);border-radius:999px;padding:8px 14px;font-size:.88rem;font-weight:600;color:var(--k)}
+.alb-menu .am-chips li b{color:var(--c)}
+.alb-menu .am-tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-bottom:16px}
+.alb-menu .am-tab{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 4px 10px;border-radius:14px;border:1.5px solid var(--g2);background:#fff;color:var(--k);cursor:pointer;font:inherit;line-height:1.1;transition:border-color .15s,background .15s}
+.alb-menu .am-tab:hover{border-color:var(--k)}
+.alb-menu .am-tab-d{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.alb-menu .am-tab-n{font-size:1.35rem;font-weight:800}
+.alb-menu .am-tab[aria-selected="true"]{background:var(--k);border-color:var(--k);color:#fff}
+.alb-menu .am-hoy{display:none;position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:var(--c);color:#fff;font-size:.62rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px}
+.alb-menu .am-tab.is-hoy .am-hoy{display:block}
+.alb-menu .am-tab:focus-visible,.alb-menu .am-btn:focus-visible{outline:3px solid var(--c);outline-offset:2px}
+.alb-menu .am-panel{display:none;grid-template-columns:1.25fr 1fr;gap:0;border-radius:22px;overflow:hidden;border:1.5px solid var(--g2)}
+.alb-menu .am-panel.is-on{display:grid}
+.alb-menu .am-main{padding:28px 28px 30px;min-width:0}
+.alb-menu .am-dn{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.alb-menu .am-dn h3{margin:0;font-size:1.05rem;font-weight:800;color:var(--t)}
+.alb-menu .am-tag{background:#DCD12B;color:var(--k);font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:3px 10px;border-radius:999px}
+.alb-menu .am-lab,.alb-menu .am-lab2{display:block;font-size:.74rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--c);margin-bottom:6px}
+.alb-menu .am-prot{font-size:clamp(1.5rem,3vw,2.15rem);font-weight:800;line-height:1.12;margin:0 0 8px;color:var(--k);text-wrap:balance}
+.alb-menu .am-sides{font-size:1.1rem;font-weight:600;margin:0 0 12px;color:var(--k)}
+.alb-menu .am-sides i{color:var(--c);font-style:normal;padding:0 4px}
+.alb-menu .am-ens{font-size:.98rem;line-height:1.5;color:var(--t);margin:0 0 22px}
+.alb-menu .am-ens b{color:var(--k)}
+.alb-menu a.am-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--c)!important;color:#fff!important;text-decoration:none!important;font-weight:800;font-size:1rem;padding:15px 26px;border-radius:999px;min-height:48px;box-shadow:0 6px 18px rgba(241,102,101,.28);transition:transform .15s,background .15s}
+.alb-menu a.am-btn:hover{background:#e2504f!important;transform:translateY(-1px)}
+.alb-menu a.am-btn::before{content:"";width:18px;height:18px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3a.5.5 0 0 0 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.6a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3a.5.5 0 0 0 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.6a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z'/%3E%3C/svg%3E") center/contain no-repeat}
+.alb-menu .am-alt{background:var(--g);padding:28px;min-width:0}
+.alb-menu .am-alt ul{list-style:none;margin:0 0 16px;padding:0;display:grid;gap:12px}
+.alb-menu .am-alt li{font-size:.98rem;line-height:1.4;color:var(--k);font-weight:600;padding-bottom:12px;border-bottom:1px solid var(--g2)}
+.alb-menu .am-alt li:last-child{border-bottom:0;padding-bottom:0}
+.alb-menu .am-alt li span{display:block;font-size:.76rem;font-weight:700;color:var(--t);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.alb-menu .am-note{font-size:.86rem;color:var(--t);margin:0;line-height:1.45}
+.alb-menu .am-off{display:none;border-radius:22px;background:var(--g);padding:28px;text-align:center}
+.alb-menu.is-vencido .am-tabs,.alb-menu.is-vencido .am-panels{display:none}
+.alb-menu.is-vencido .am-off{display:block}
+.alb-menu .am-plan{margin-top:22px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;background:var(--k);color:#fff;border-radius:22px;padding:22px 26px}
+.alb-menu .am-plan p{margin:0;font-size:1rem;line-height:1.45;max-width:60ch}
+.alb-menu .am-plan b{color:#fff}
+.alb-menu .am-plan a{color:#fff!important;font-weight:800;text-decoration:none!important;border:1.5px solid #fff;border-radius:999px;padding:11px 20px;white-space:nowrap}
+.alb-menu .am-plan a:hover{background:#fff;color:var(--k)!important}
+.alb-menu .am-src{font-size:.8rem;color:var(--t);margin:14px 0 0}
+.alb-menu .am-prices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 10px}
+.alb-menu .am-price{border:1.5px solid var(--g2);border-radius:18px;padding:16px 18px;min-width:0;background:#fff}
+.alb-menu .am-price small{display:block;font-size:.74rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--t);margin-bottom:4px}
+.alb-menu .am-price strong{display:block;font-size:1.6rem;font-weight:800;color:var(--k);line-height:1.1}
+.alb-menu .am-price span{display:block;font-size:.85rem;color:var(--t);margin-top:4px;line-height:1.35}
+.alb-menu .am-price.is-main{border-color:var(--c);background:#FDEBEA}
+.alb-menu .am-price-note{font-size:.84rem;color:var(--t);margin:0 0 24px}
+@media (max-width:760px){
+.alb-menu .am-prices{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.alb-menu .am-price{padding:12px 8px;text-align:center;border-radius:14px}
+.alb-menu .am-price small{font-size:.6rem;letter-spacing:.04em}
+.alb-menu .am-price strong{font-size:1.08rem}
+.alb-menu .am-price span{display:none}
+.alb-menu{padding:40px 0 48px}
+.alb-menu .am-tabs{grid-template-columns:repeat(6,minmax(0,1fr));gap:5px}
+.alb-menu .am-tab{padding:10px 2px 8px;border-radius:12px}
+.alb-menu .am-tab-d{font-size:.66rem}
+.alb-menu .am-tab-n{font-size:1.1rem}
+.alb-menu .am-panel.is-on{grid-template-columns:1fr}
+.alb-menu .am-main,.alb-menu .am-alt{padding:22px 20px}
+.alb-menu a.am-btn{width:100%}
+.alb-menu .am-plan a{width:100%;text-align:center}
+}
+
+.alb-menu .am-barra{font-size:.95rem;line-height:1.5;color:var(--t);margin:-12px 0 22px}
+.alb-menu .am-barra b{color:var(--k)}
+.alb-menu .am-barra small{font-size:.8rem;color:var(--t)}
+.alb-menu .am-barra i{color:var(--c);font-style:normal;padding:0 3px}
+.alb-menu .am-prices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 10px}
+.alb-menu .am-price{border:1.5px solid var(--g2);border-radius:18px;padding:16px 18px;min-width:0;background:#fff}
+.alb-menu .am-price small{display:block;font-size:.74rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--t);margin-bottom:4px}
+.alb-menu .am-price strong{display:block;font-size:1.6rem;font-weight:800;color:var(--k);line-height:1.1}
+.alb-menu .am-price span{display:block;font-size:.85rem;color:var(--t);margin-top:4px;line-height:1.35}
+.alb-menu .am-price.is-main{border-color:var(--c);background:#FDEBEA}
+.alb-menu .am-price-note{font-size:.84rem;color:var(--t);margin:0 0 24px}
+/* franja del home */
+.alb-hoy .ah-card{display:grid;grid-template-columns:1.35fr 1fr;border:1.5px solid var(--g2);border-radius:26px;overflow:hidden}
+.alb-hoy .ah-main{padding:32px 32px 34px;min-width:0}
+.alb-hoy .ah-side{background:var(--g);padding:32px;min-width:0;display:flex;flex-direction:column;gap:12px}
+.alb-hoy .ah-dn{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.alb-hoy .ah-when{background:var(--k);color:#fff;font-size:.78rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:999px}
+.alb-hoy .ah-otras{margin-top:-10px}
+.alb-hoy .ah-side .am-prices{grid-template-columns:1fr;gap:8px;margin:0}
+.alb-hoy .ah-side .am-price{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:12px 16px;border-radius:14px}
+.alb-hoy .ah-side .am-price small{margin:0}
+.alb-hoy .ah-side .am-price strong{font-size:1.3rem}
+.alb-hoy .ah-side .am-price span{display:none}
+.alb-hoy .ah-side .am-price-note{margin:0}
+.alb-hoy a.ah-week{color:var(--k)!important;font-weight:800;text-decoration:none!important;border-bottom:2px solid var(--c);align-self:flex-start;padding-bottom:2px;margin-top:4px}
+.alb-hoy a.ah-week:hover{color:var(--c)!important}
+.alb-hoy .ah-side .am-chips{flex-direction:column;align-items:flex-start;gap:6px}
+.alb-hoy .ah-side .am-chips li{background:#fff;font-size:.85rem}
+.alb-hoy .ah-off{display:none}
+.alb-hoy.is-vencido .ah-main>*:not(.ah-off){display:none}
+.alb-hoy.is-vencido .ah-off{display:block}
+@media (max-width:760px){
+.alb-menu .am-prices{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.alb-menu .am-price{padding:12px 8px;text-align:center;border-radius:14px}
+.alb-menu .am-price small{font-size:.6rem;letter-spacing:.04em}
+.alb-menu .am-price strong{font-size:1.08rem}
+.alb-menu .am-price span{display:none}
+.alb-menu .am-barra{margin-top:-14px}
+.alb-hoy .ah-card{grid-template-columns:1fr;border-radius:22px}
+.alb-hoy .ah-main,.alb-hoy .ah-side{padding:22px 20px}
+.alb-hoy .ah-side .am-prices{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.alb-hoy .ah-side .am-price{display:block;text-align:center;padding:12px 6px}
+.alb-hoy .ah-side .am-price strong{font-size:1.05rem}
+}
+</style>
+<section class="alb-menu alb-hoy" id="hoy-alabama" aria-labelledby="ah-h">
+<div class="am-in">
+<div class="ah-card">
+<div class="ah-main">
+<span class="am-k">Menú del día de hoy</span>
+<h2 id="ah-h" style="font-size:clamp(1.25rem,2.2vw,1.5rem);margin-bottom:14px">Hoy en Alabama</h2>
+<div class="ah-day"><div class="ah-dn"><span class="ah-when">Hoy · Jueves 29</span><span class="am-tag">Típico paisa</span></div><p class="am-prot">Frijoles con chicharrón o carne molida (se elige una)</p><p class="am-sides">Tajadas de maduro <i>·</i> Arroz jardinera</p><p class="am-ens"><b>Ensalada del día:</b> Campesina: zanahoria en julianas, cilantro y tomate pintón</p><p class="am-barra"><b>Ensaladas de la barra</b> <small>(línea saludable)</small> César <i>·</i> Frijol y aguacate</p><p class="am-ens ah-otras"><b>También hay:</b> Pollo en frutas tropicales</p><a class="am-btn" href="https://wa.me/573184024854?text=Hola%2C%20vengo%20de%20la%20p%C3%A1gina%20web%20y%20quiero%20pedir%20el%20almuerzo%20del%20jueves%2029%3A%20Frijoles%20con%20chicharr%C3%B3n%20o%20carne%20molida%20(se%20elige%20una)." target="_blank" rel="noopener" data-cta="home-hoy-jue">Pedir el almuerzo de hoy</a></div>
+<div class="ah-off"><p class="am-prot" style="font-size:1.4rem">Estamos montando el menú de esta semana</p><p class="am-ens">Escríbenos y te contamos qué hay hoy.</p><a class="am-btn" href="https://wa.me/573184024854?text=Hola%2C%20vengo%20de%20la%20p%C3%A1gina%20web.%20%C2%BFQu%C3%A9%20men%C3%BA%20hay%20hoy%3F" target="_blank" rel="noopener" data-cta="home-hoy-consulta">Preguntar el menú de hoy</a></div>
+</div>
+<div class="ah-side">
+<span class="am-lab2" style="margin:0">Precios a domicilio</span>
+<div class="am-prices"><div class="am-price is-main"><small>Casero</small><strong>$32.950</strong><span>Sopa, proteína, arroz, acompañante y ensalada</span></div><div class="am-price"><small>Saludable</small><strong>$35.950</strong><span>Ensalada de 7 ingredientes, proteína y acompañante</span></div><div class="am-price"><small>Bowl</small><strong>$35.950</strong><span>Base, proteína, acompañante y vegetales frescos</span></div></div>
+<p class="am-price-note">Vegetariano al mismo precio. Bebida natural del día +$2.500. Domicilio gratis en El Poblado y Milla de Oro; otras zonas desde $5.000.</p>
+<ul class="am-chips" style="margin:0"><li><b>Pide y paga antes de las 11:00 a. m.</b> y te llega antes de la 1:00 p. m.</li><li>Domicilio <b>gratis</b> en El Poblado y Milla de Oro</li><li>Lunes a sábado</li></ul>
+<a class="ah-week" href="/menu/#menu-semana">Ver el menú de toda la semana →</a>
+</div>
+</div>
+</div>
+</section>
+<script type="application/json" id="hoy-alabama-data">{"rango":"Lunes 26 a sábado 31 de octubre de 2026","inicio":"2026-10-26","fin":"2026-10-31","dias":[{"f":"2026-10-26","dn":"Lunes 26","tag":"","prot":"Filete bistec","acomp":"Yuca al chimichurri","arroz":"Arroz con cilantro","ens":"Lechuga, pepino, piña y hierbabuena","alt":[["Sopa del día","Sopa de guineo"],["Proteína en salsa","Cerdo en salsa de tocineta"],["Acompañantes alternos","Papa criolla con paprika · Maduro calado"],["","Arroz blanco"]],"barra":["Toscana","Frijol y aguacate"]},{"f":"2026-10-27","dn":"Martes 27","tag":"","prot":"Ajiaco","acomp":"Mazorca y banano","arroz":"Arroz blanco","ens":"Cremosa de repollo y zanahoria","alt":[["Sopa del día","Sopa de tortilla"],["Proteína en salsa","Cerdo mexicano"],["Acompañantes alternos","Papas al romero en cuartos · Torta de piña"],["","Arroz con cebolla caramelizada"]],"barra":["César","Toscana"]},{"f":"2026-10-28","dn":"Miércoles 28","tag":"","prot":"Cerdo en frutos secos","acomp":"Yucas guisadas","arroz":"Arroz con cabello de ángel","ens":"Lechuga, repollo morado, cilantro, tostacos y pimentón agridulce","alt":[["Sopa del día","Sopa de verduras"],["Proteína en salsa","Pollo a la naranja con ajonjolí"],["Acompañantes alternos","Papas chorreadas · Torta de banano"],["","Arroz blanco"]],"barra":["Mediterránea","Caribe verde"]},{"f":"2026-10-29","dn":"Jueves 29","tag":"Típico paisa","prot":"Frijoles con chicharrón o carne molida (se elige una)","acomp":"Tajadas de maduro","arroz":"Arroz jardinera","ens":"Campesina: zanahoria en julianas, cilantro y tomate pintón","alt":[["Proteína en salsa","Pollo en frutas tropicales"],["Acompañantes alternos","Papas cremosas al cilantro · Croqueta de zanahoria"],["","Arroz blanco"]],"barra":["César","Frijol y aguacate"]},{"f":"2026-10-30","dn":"Viernes 30","tag":"","prot":"Cerdo primavera","acomp":"Puré con puerro crocante","arroz":"Arroz con cebolla caramelizada","ens":"Lechuga, zucchini y calabacín amarillo, tomate y albahaca","alt":[["Sopa del día","Sopa de patacón"],["Proteína en salsa","Pernil a la criolla"],["Acompañantes alternos","Torta de zanahoria · Lentejas guisadas con curry y champiñones"],["","Arroz blanco"]],"barra":["Cubana","Toscana"]},{"f":"2026-10-31","dn":"Sábado 31","tag":"","prot":"Cerdo en frutos secos","acomp":"Yucas guisadas","arroz":"Arroz blanco","ens":"Lechuga, repollo morado, cilantro, tostacos y pimentón agridulce","alt":[["Sopa del día","Sopa de verduras"],["Proteína en salsa","Pollo a la naranja con ajonjolí"],["Acompañantes alternos","Papas chorreadas · Maduro en tentación"]],"barra":["Cubana"]}]}</script>
+<script>/* Motor compartido del menú de Alabama (bloque /menu/ y franja del home).
+   Se usa en el navegador y en Node (build). Sin dependencias. */
+window.ALB = window.ALB || (function () {
+  var WA = '573184024854';
+  var MESES = {enero:1,febrero:2,marzo:3,abril:4,mayo:5,junio:6,julio:7,agosto:8,septiembre:9,octubre:10,noviembre:11,diciembre:12};
+  function e(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function iso(y, m, d) { return y + '-' + ('0' + m).slice(-2) + '-' + ('0' + d).slice(-2); }
+  function wa(msg) { return 'https://wa.me/' + WA + '?text=' + encodeURIComponent(msg); }
+  function diaNombre(dn) { return dn.split(' ')[0]; }
+  function key(dn) { return diaNombre(dn).slice(0, 3).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+
+  /* Lee el HTML de menu.alabama.soy y devuelve la semana normalizada, o null */
+  function parse(doc) {
+    var rangoEl = doc.querySelector('header .s'); if (!rangoEl) return null;
+    var rango = rangoEl.textContent.trim();
+    var m = rango.match(/(\d{1,2})\s+a\s+\S+\s+(\d{1,2})\s+de\s+(\w+)\s+de\s+(\d{4})/i); if (!m) return null;
+    var mes = MESES[m[3].toLowerCase()], an = +m[4], d1 = +m[1], d2 = +m[2];
+    var mes1 = d1 > d2 ? (mes === 1 ? 12 : mes - 1) : mes, an1 = (d1 > d2 && mes === 1) ? an - 1 : an;
+    var extra = {}; try { var x = doc.getElementById('alabama-extra'); if (x) extra = JSON.parse(x.textContent) || {}; } catch (er) {}
+    var barra = extra.barra || {};
+    var days = [].slice.call(doc.querySelectorAll('.day')); if (days.length < 4) return null;
+    var w = { rango: rango, dias: [] };
+    days.forEach(function (el) {
+      var dn = (el.querySelector('.dn') || {}).textContent || '';
+      var tag = /T[IÍ]PICO/i.test(dn) ? 'Típico paisa' : '';
+      dn = dn.replace(/T[IÍ]PICO PAISA/i, '').replace(/\s+/g, ' ').trim();
+      var num = parseInt(dn.split(' ')[1], 10);
+      /* fecha: primer día del rango + desplazamiento por número de día */
+      var base = new Date(Date.UTC(an1, mes1 - 1, d1)), dt = new Date(base);
+      for (var k = 0; k < 7; k++) { var t = new Date(Date.UTC(an1, mes1 - 1, d1 + k)); if (t.getUTCDate() === num) { dt = t; break; } }
+      var f = iso(dt.getUTCFullYear(), dt.getUTCMonth() + 1, dt.getUTCDate());
+      var menu = el.querySelector('.menu');
+      var bs = menu ? [].slice.call(menu.querySelectorAll('b')).map(function (b) { return b.textContent.trim(); }) : [];
+      var ens = menu ? ((menu.textContent || '').split('Ensalada del día:')[1] || '').replace(/\s+/g, ' ').trim() : '';
+      var alt = [];
+      var altEl = el.querySelector('.alt');
+      if (altEl) {
+        altEl.innerHTML.split(/<br\s*\/?>/i).forEach(function (chunk) {
+          var tmp = doc.createElement('div'); tmp.innerHTML = chunk;
+          [].slice.call(tmp.querySelectorAll('.lab2')).forEach(function (z) { z.parentNode.removeChild(z); });
+          var t = tmp.textContent.replace(/\s+/g, ' ').trim(); if (!t) return;
+          var i = t.indexOf(':'); alt.push(i > 0 ? [t.slice(0, i).trim(), t.slice(i + 1).trim()] : ['', t]);
+        });
+      }
+      w.dias.push({ f: f, dn: dn, tag: tag, prot: bs[0] || '', acomp: bs[1] || '', arroz: bs[2] || '', ens: ens, alt: alt, barra: barra[f] || [] });
+    });
+    w.inicio = w.dias[0].f; w.fin = w.dias[w.dias.length - 1].f;
+    return w;
+  }
+
+  function hoyBog(now) { return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota', year: 'numeric', month: '2-digit', day: '2-digit' }).format(now || new Date()); }
+  function horaBog(now) { return parseInt(new Intl.DateTimeFormat('en-US', { timeZone: 'America/Bogota', hour: 'numeric', hour12: false }).format(now || new Date()), 10); }
+
+  /* Día a mostrar: hoy (o el siguiente después de las 3 p. m.), o el próximo día de servicio. -1 si la semana ya pasó */
+  function pick(w, now) {
+    var hoy = hoyBog(now), h = horaBog(now), i;
+    for (i = 0; i < w.dias.length; i++) if (w.dias[i].f === hoy) return { i: (h >= 15 && i < w.dias.length - 1) ? i + 1 : i, hoy: i, manana: h >= 15 && i < w.dias.length - 1 };
+    for (i = 0; i < w.dias.length; i++) if (w.dias[i].f > hoy) return { i: i, hoy: -1, manana: false };
+    return { i: -1, hoy: -1, manana: false };
+  }
+
+  function barraHtml(d) {
+    if (!d.barra || !d.barra.length) return '';
+    return '<p class="am-barra"><b>Ensaladas de la barra</b> <small>(línea saludable)</small> ' + d.barra.map(e).join(' <i>·</i> ') + '</p>';
+  }
+
+  /* Pestañas y paneles de la semana (/menu/) */
+  function renderWeek(w) {
+    var tabs = '', pans = '';
+    w.dias.forEach(function (d, i) {
+      var dia = diaNombre(d.dn), num = d.dn.split(' ')[1];
+      tabs += '<button type="button" class="am-tab" role="tab" data-f="' + d.f + '" aria-controls="am-p-' + i + '" aria-selected="false"><span class="am-tab-d">' + e(dia.slice(0, 3)) + '</span><span class="am-tab-n">' + e(num) + '</span><span class="am-hoy">Hoy</span></button>';
+      var alt = d.alt.map(function (a) { return '<li>' + (a[0] ? '<span>' + e(a[0]) + '</span>' : '') + e(a[1]) + '</li>'; }).join('');
+      pans += '<article class="am-panel" id="am-p-' + i + '" role="tabpanel" data-f="' + d.f + '"><div class="am-main"><div class="am-dn"><h3>' + e(d.dn) + '</h3>' + (d.tag ? '<span class="am-tag">' + e(d.tag) + '</span>' : '') + '</div>'
+        + '<span class="am-lab">Menú del día</span><p class="am-prot">' + e(d.prot) + '</p><p class="am-sides">' + e(d.acomp) + ' <i>·</i> ' + e(d.arroz) + '</p>'
+        + '<p class="am-ens"><b>Ensalada del día:</b> ' + e(d.ens) + '</p>' + barraHtml(d)
+        + '<a class="am-btn" href="' + e(wa('Hola, vengo de la página web y quiero pedir el almuerzo del ' + d.dn.toLowerCase() + ': ' + d.prot + '.')) + '" target="_blank" rel="noopener" data-cta="menu-dia-' + key(d.dn) + '">Pedir el almuerzo del ' + e(dia.toLowerCase()) + '</a></div>'
+        + '<div class="am-alt"><span class="am-lab2">Otras opciones para ese día</span><ul>' + alt + '</ul><p class="am-note">Cambia la proteína, el acompañante o la sopa por cualquiera de estas, sin costo.</p></div></article>';
+    });
+    return { tabs: tabs, pans: pans };
+  }
+
+  /* Tarjeta de un día (home) */
+  function renderDay(d, cuando) {
+    var dia = diaNombre(d.dn);
+    var etiqueta = cuando === 'hoy' ? 'Hoy · ' + d.dn : (cuando === 'manana' ? 'Mañana · ' + d.dn : d.dn);
+    var boton = cuando === 'hoy' ? 'Pedir el almuerzo de hoy' : (cuando === 'manana' ? 'Pedir el almuerzo de mañana' : 'Pedir el almuerzo del ' + dia.toLowerCase());
+    var otras = d.alt.filter(function (a) { return /prote/i.test(a[0]) || /sopa/i.test(a[0]); }).map(function (a) { return e(a[1]); });
+    return '<div class="ah-dn"><span class="ah-when">' + e(etiqueta) + '</span>' + (d.tag ? '<span class="am-tag">' + e(d.tag) + '</span>' : '') + '</div>'
+      + '<p class="am-prot">' + e(d.prot) + '</p><p class="am-sides">' + e(d.acomp) + ' <i>·</i> ' + e(d.arroz) + '</p>'
+      + '<p class="am-ens"><b>Ensalada del día:</b> ' + e(d.ens) + '</p>' + barraHtml(d)
+      + (otras.length ? '<p class="am-ens ah-otras"><b>También hay:</b> ' + otras.join(' · ') + '</p>' : '')
+      + '<a class="am-btn" href="' + e(wa('Hola, vengo de la página web y quiero pedir el almuerzo del ' + d.dn.toLowerCase() + ': ' + d.prot + '.')) + '" target="_blank" rel="noopener" data-cta="home-hoy-' + key(d.dn) + '">' + e(boton) + '</a>';
+  }
+
+  function corto(rango) { var r = rango.replace(/ de 20\d\d$/, ''); return r.charAt(0).toLowerCase() + r.slice(1); }
+
+  function fetchWeek(cb) {
+    try {
+      fetch('https://menu.alabama.soy/', { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : null; }).then(function (t) {
+        if (!t) return; var w = parse(new DOMParser().parseFromString(t, 'text/html')); if (w) cb(w);
+      }).catch(function () {});
+    } catch (er) {}
+  }
+
+  return { parse: parse, pick: pick, renderWeek: renderWeek, renderDay: renderDay, corto: corto, fetchWeek: fetchWeek, e: e };
+})();
+
+
+(function(){var root=document.getElementById('hoy-alabama');if(!root||!window.ALB)return;
+var W=JSON.parse(document.getElementById('hoy-alabama-data').textContent);var slot=root.querySelector('.ah-day');
+function show(w){var p=ALB.pick(w);if(p.i<0){root.classList.add('is-vencido');return;}root.classList.remove('is-vencido');
+var c=(p.hoy>=0&&p.i===p.hoy)?'hoy':(p.manana?'manana':'otro');slot.innerHTML=ALB.renderDay(w.dias[p.i],c);
+var k=root.querySelector('.am-k');if(k)k.textContent=c==='hoy'?'Menú del día de hoy':(c==='manana'?'Menú de mañana':'Próximo menú');}
+show(W);
+ALB.fetchWeek(function(w){if(w.rango===W.rango)return;W=w;show(w);});
+})();</script>
