@@ -8,7 +8,7 @@
  *
  * Seguridad: si algo falla (sin red, estructura distinta, error de PHP), la página sale
  * exactamente igual que antes (el texto fijo del widget). Todo va dentro de try/catch.
- * Caché: la semana leída se guarda 30 min (transient). Una tarea de WP-Cron cada hora
+ * Caché: la semana leída se guarda 30 min (transient). Una tarea de WP-Cron cada 15 min
  * vuelve a leer y, si cambió la semana, el día o pasó la hora de corte (3 p. m.),
  * vacía la caché de WP Rocket para que la página se regenere.
  */
@@ -243,7 +243,7 @@ if (defined('ABSPATH') && !function_exists('alb_ssr_week')) {
     } catch (\Throwable $e) { return $html; }
   }, 5);
 
-  /* Cada hora: refresca la semana y vacía la caché de WP Rocket si cambió algo visible */
+  /* Cada 15 minutos: refresca la semana y vacía la caché de WP Rocket si cambió algo visible */
   add_action('alb_menu_ssr_refresh', function () {
     try {
       $w = alb_ssr_week(true); if (!$w) return;
@@ -255,7 +255,16 @@ if (defined('ABSPATH') && !function_exists('alb_ssr_week')) {
       if (function_exists('rocket_clean_post')) rocket_clean_post(9153);
     } catch (\Throwable $e) {}
   });
+  /* Intervalo propio de 15 minutos (7-nov-2026). Con el cron del servidor de cPanel
+     (cada 15 min a wp-cron.php) el refresco ya no depende de que haya visitas. */
+  add_filter('cron_schedules', function ($s) {
+    if (!isset($s['alb_15min'])) $s['alb_15min'] = array('interval' => 15 * MINUTE_IN_SECONDS, 'display' => 'Cada 15 minutos (Alabama)');
+    return $s;
+  });
   add_action('init', function () {
-    if (!wp_next_scheduled('alb_menu_ssr_refresh')) wp_schedule_event(time() + 300, 'hourly', 'alb_menu_ssr_refresh');
+    $ev = wp_get_scheduled_event('alb_menu_ssr_refresh');
+    if ($ev && $ev->schedule !== 'alb_15min') { wp_clear_scheduled_hook('alb_menu_ssr_refresh'); $ev = false; }
+    if (!$ev) wp_schedule_event(time() + 60, 'alb_15min', 'alb_menu_ssr_refresh');
   });
 }
+
